@@ -1,0 +1,29 @@
+﻿@model List<House>
+@using PagedList.Mvc;
+@using PagedList
+@using Microsoft.AspNetCore.Mvc.ViewFeatures.Internal;
+@using MyWebAppDal.Model
+
+
+<link href="~/Content/PagedList.css" rel="stylesheet" type="text/css" />
+@{
+    ViewBag.Title = "Houses";
+
+}
+<h2>Houses</h2>
+@foreach (var House in Model)
+{
+    <div class="clearfix float-my-children">
+        <img src="http://www.design3d.hu/latvanyterv/csaladi-haz-budapest-13.jpg" width=100>
+        <div>
+            <p>@House.Price Mft </p>
+            <p>@House.Area , @House.CityId , @House.HouseNumber.  Mft </p>
+            <p>@House.Area m^2 </p>
+            <p>@House.RoomNumber + @House.PartyRoomNumber félszoba </p>
+        </div>
+    </div>
+}
+
+
+
+

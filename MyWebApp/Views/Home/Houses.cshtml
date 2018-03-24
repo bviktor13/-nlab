@@ -1,0 +1,132 @@
+﻿@using  MyWebAppDal.Model
+@using  MyWebAppDal.DTO
+@using Microsoft.AspNetCore.Mvc.Rendering
+@using PagedList.Mvc
+
+@model MyWebApp.Models.HomeViewModels.HousesViewModel
+@{
+    ViewBag.Title = "Houses";
+
+}
+
+<script src="~/js/text.js" language="javascript" type="text/javascript"></script>
+
+
+<style>
+    .content {
+        width: 600px;
+        border: 2px solid #772953;
+        padding: 20px;
+        overflow: hidden;
+    }
+
+        .content img {
+            margin-right: 15px;
+            float: left;
+        }
+
+    .text-label {
+        color: ##f0f0f0;
+        font-weight: bold;
+    }
+</style>
+
+<h2>Houses</h2>
+<div class="row">
+    <div class="col-sm-4">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label for="">Eladó/Kiadó:</label>
+                <select asp-for="@Model.HouseSearch.ForSaleType" asp-items="Html.GetEnumSelectList(typeof (ForSaleType))"></select>
+            </div>
+            <div class="form-group">
+                <label for="">Ház típusa:</label>
+                <select asp-for="@Model.HouseSearch.HouseType" asp-items="Html.GetEnumSelectList(typeof (HouseType))"></select>
+            </div>
+            <div class="form-group">
+                <label for="">Város:</label>
+                @Html.DropDownListFor(Model => Model.Cities, new SelectList(Model.Cities, "Id", "Name"), "", new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                <label for="">Ár:</label>
+                <table>
+                    <tr>
+                        <td>  @Html.TextBoxFor(Model => Model.HouseSearch.MinPrice, new { @class = "form-control" })
+                        <td>  -
+                        <td>  @Html.TextBoxFor(Model => Model.HouseSearch.MaxPrice, new { @class = "form-control" })
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <label for="">Alap terület:</label>
+                <table>
+                    <tr>
+                        <td>  @Html.TextBoxFor(Model => Model.HouseSearch.MinArea, new { @class = "form-control" })
+                        <td>  -
+                        <td>  @Html.TextBoxFor(Model => Model.HouseSearch.MaxArea, new { @class = "form-control" })
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <label for="">Szobák és félszobák száma:</label>
+                <table>
+                    <tr>
+                        <td>  @Html.TextBoxFor(Model => Model.HouseSearch.RoomNumber, new { @class = "form-control" })
+                        <td>  +
+                        <td>  @Html.TextBoxFor(Model => Model.HouseSearch.PartyRoomNumber, new { @class = "form-control" })
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <label for="">Fűtés:</label>
+                <select asp-for="@Model.HouseSearch.HeatingType" asp-items="Html.GetEnumSelectList(typeof (HeatingType))"></select>
+            </div>
+            <div class="form-group">
+                <label for="">Belmagasság:</label>
+                <select asp-for="@Model.HouseSearch.InnerHeightType" asp-items="Html.GetEnumSelectList(typeof (InnerHeightType))"></select>
+            </div>
+            <div class="form-group">
+                <label for="">Bútorozott:</label>
+                @Html.CheckBoxFor(Model => Model.HouseSearch.Furnished)
+            </div>
+            <div class="form-group">
+                <label for="">Állat megengedett::</label>
+                @Html.CheckBoxFor(Model => Model.HouseSearch.Animal)
+            </div>
+            <div class="form-group">
+                <label for="">Erkély:</label>
+                @Html.CheckBoxFor(Model => Model.HouseSearch.Balcony)
+            </div>
+            <div class="form-group">
+                <label for="">Lift:</label>
+                @Html.CheckBoxFor(Model => Model.HouseSearch.Elevator)
+            </div>
+            <div class="form-group">
+                <label for="">Dohányzás megengedett:</label>
+                @Html.CheckBoxFor(Model => Model.HouseSearch.Smoking)
+            </div>
+            <button type="submit" class="btn bg-primary">
+                Keresés
+            </button>
+        </form>
+    </div>
+    @foreach (HouseDto House in Model.Houses)
+    {
+        <div class="col-sm-4"></div>
+
+        <div class="col-sm-8">
+
+            <div class="content">
+                <div style="cursor: pointer;" onclick="window.location='https://localhost:44303/Home/HouseDetails/@House.Id';">
+                    <img src="http://www.design3d.hu/latvanyterv/csaladi-haz-budapest-13.jpg" width=200>
+                    <p>@House.Price Ft </p>
+                    <p>@*@Model.Cities.ElementAt(House.CityId-1).Name *@, @House.Street , @House.HouseNumber.   </p>
+                    <p>@House.Area m^2 </p>
+                    <p>@House.RoomNumber + @House.PartyRoomNumber félszoba </p>
+                </div>
+            </div>
+            <p></p>
+        </div>
+    }
+</div>

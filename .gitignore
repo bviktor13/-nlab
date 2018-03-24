@@ -4,3 +4,4 @@
 /MyWebApp/bin/*
 /MyWebApp/obj/*
 /MyWebApp/wwwroot/*
+/MyWebApp/MyWebApp.csproj.user

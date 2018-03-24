@@ -1,0 +1,24 @@
+﻿@model ReflectionIT.Mvc.Paging.PagingList<MyWebAppDal.DTO.HouseDto>
+@using ReflectionIT.Mvc.Paging
+@addTagHelper *, ReflectionIT
+
+@{
+    ViewData["Title"] = "Houses";
+}
+
+<h2>Houses</h2>
+
+<nav aria-label="Suppliers navigation example">
+    @this.("Pager", new { pagingList = this.Model })
+</nav>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-striped">
+    ...
+</table>
+
+<nav aria-label="Suppliers navigation example">
+    <vc:pager paging-list="@Model" />
+</nav>

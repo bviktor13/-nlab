@@ -1,0 +1,90 @@
+﻿@using  MyWebAppDal.Model
+@model MyWebApp.Models.HomeViewModels.AddHouseViewModel
+@{
+    /**/
+
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Hirdetés feladása</h2>
+
+@using (Html.BeginForm("Save", "Home"))
+{@Html.ValidationSummary(true, "Please fix the fllowing errors.")
+<div class="row">
+    <div class="col-sm-4">
+        <form method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label for="">Eladó/Kiadó:</label>
+                <select asp-for="@Model.House.ForSaleType" asp-items="Html.GetEnumSelectList(typeof (ForSaleType))"></select>
+            </div>
+            <div class="form-group">
+                <label for="">Ház típusa:</label>
+                <select asp-for="@Model.House.HouseType" asp-items="Html.GetEnumSelectList(typeof (HouseType))"></select>
+            </div>
+            <div class="form-group">
+                <label for="">Város:</label>
+                @* @Html.DropDownListFor(Model => Model.Cities, new SelectList(Model.Cities, "Id", "Name"), "", new { @class = "form-control" })*@
+            </div>
+                    <div class="form-group">
+                        <label for="">Utca:</label>
+                        @Html.TextBoxFor(Model => Model.House.Street, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label for="">Házszám:</label>
+                        @Html.TextBoxFor(Model => Model.House.HouseNumber, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label for="">Ár:</label>
+                        @Html.TextBoxFor(Model => Model.House.Price, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label for="">Alap terület:</label>
+                        @Html.TextBoxFor(Model => Model.House.Area, new { @class = "form-control" })
+                    </div>
+                    <div class="form-group">
+                        <label for="">Szobák és félszobák száma:</label>
+                        <table>
+                            <tr>
+                                <td>  @Html.TextBoxFor(Model => Model.House.RoomNumber, new { @class = "form-control" })
+                                <td>  +
+                                <td>  @Html.TextBoxFor(Model => Model.House.PartyRoomNumber, new { @class = "form-control" })
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Fűtés:</label>
+                        <select asp-for="@Model.House.HeatingType" asp-items="Html.GetEnumSelectList(typeof (HeatingType))"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Belmagasság:</label>
+                        <select asp-for="@Model.House.InnerHeightType" asp-items="Html.GetEnumSelectList(typeof (InnerHeightType))"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="">Bútorozott:</label>
+                        @Html.CheckBoxFor(Model => Model.House.Furnished)
+                    </div>
+                    <div class="form-group">
+                        <label for="">Állat megengedett::</label>
+                        @Html.CheckBoxFor(Model => Model.House.Animal)
+                    </div>
+                    <div class="form-group">
+                        <label for="">Erkély:</label>
+                        @Html.CheckBoxFor(Model => Model.House.Balcony)
+                    </div>
+                    <div class="form-group">
+                        <label for="">Lift:</label>
+                        @Html.CheckBoxFor(Model => Model.House.Elevator)
+                    </div>
+                    <div class="form-group">
+                        <label for="">Dohányzás megengedett:</label>
+                        @Html.CheckBoxFor(Model => Model.House.Smoking)
+                    </div>
+                    <button type="submit" class="btn bg-primary">Feladás</button>
+                </form>
+            </div>
+        </div>
+
+        @Html.HiddenFor(Model => Model.House.Id)
+        }
