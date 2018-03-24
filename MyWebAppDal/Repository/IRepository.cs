@@ -19,7 +19,5 @@ namespace MyWebAppDal.Repository
         House HouseById(int Id);
 
         ApplicationUser UserById(string id);
-
-        ApplicationDbContext context();
     }
 }

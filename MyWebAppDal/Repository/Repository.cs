@@ -16,33 +16,35 @@ namespace MyWebAppDal.Repository
         public IEnumerable<HouseDto> GetHouses()
         {
 
-            var context = new ApplicationDbContext();
-
-            var houses = context.Houses.Select(h => new HouseDto
+            using (var context = new ApplicationDbContext())
             {
-                Id = h.Id,
-                Price = h.Price,
-                CityId = h.CityId,
-                Street = h.Street,
-                HouseNumber = h.HouseNumber,
-                Area = h.Area,
-                RoomNumber = h.RoomNumber,
-                PartyRoomNumber = h.PartyRoomNumber,
-                Image = h.Image,
-            });
-
+                var houses = context.Houses.Select(h => new HouseDto
+                {
+                    Id = h.Id,
+                    Price = h.Price,
+                    CityId = h.CityId,
+                    Street = h.Street,
+                    HouseNumber = h.HouseNumber,
+                    Area = h.Area,
+                    RoomNumber = h.RoomNumber,
+                    PartyRoomNumber = h.PartyRoomNumber,
+                    Image = h.Image,
+                }).ToList();
                 return houses;
-
+            }
         }
+
         public List<House> GetMyHouses()
         {
 
             int pageSize = 1;
-            var context = new ApplicationDbContext();
-            int page = context.Houses.Count();
-            var houses = context.Houses.OrderByDescending(h => h.Id).Skip((page - 1) * pageSize).Take(pageSize).ToList();
+            using (var context = new ApplicationDbContext())
+            {
+                int page = context.Houses.Count();
+                var houses = context.Houses.OrderByDescending(h => h.Id).Skip((page - 1) * pageSize).Take(pageSize).ToList();
 
-            return houses;
+                return houses;
+            }
         }
 
 
@@ -70,18 +72,12 @@ namespace MyWebAppDal.Repository
         public ApplicationUser UserById(string id)
         {
 
-            var context = new ApplicationDbContext();       
-            ApplicationUser applicationUser = context.Users.Find(id);
+            using(var context = new ApplicationDbContext())
+            {
+                ApplicationUser applicationUser = context.Users.Find(id);
 
-            return applicationUser;
-        }
-
-        public ApplicationDbContext context()
-        {
-
-            var _context = new ApplicationDbContext();
-
-            return _context;
+                return applicationUser;
+            }
         }
     }
 }
