@@ -1,0 +1,6 @@
+/MyWebAppDal/obj/*
+/MyWebAppDal/bin/*
+/.vs/*
+/MyWebApp/bin/*
+/MyWebApp/obj/*
+/MyWebApp/wwwroot/*
