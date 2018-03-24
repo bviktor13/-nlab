@@ -10,7 +10,7 @@ using System.Text;
 
 namespace MyWebAppDal.Repository
 {
-   public class Repo
+   public class Repository: IRepository
    {
 
         public IEnumerable<HouseDto> GetHouses()
