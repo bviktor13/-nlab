@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using MyWebAppDal.DTO;
 using System.Linq;
 using System.Threading.Tasks;
-using PagedList;
 
 namespace MyWebApp.Models.HomeViewModels
 {

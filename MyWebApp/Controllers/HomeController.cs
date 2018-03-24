@@ -8,8 +8,7 @@ using MyWebApp.Models.HomeViewModels;
 using MyWebAppDal.Model;
 using MyWebAppDal.Models;
 using MyWebAppDal.Repository;
-using PagedList;
-using ReflectionIT.Mvc.Paging;
+using Sakura.AspNetCore;
 
 namespace MyWebApp.Controllers
 {
@@ -17,8 +16,6 @@ namespace MyWebApp.Controllers
     {
         public IActionResult Index()
         {
-           
-
             return View();
         }
 

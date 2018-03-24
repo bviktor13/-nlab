@@ -15,7 +15,7 @@ namespace MyWebApp.Data
 
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
-            : base(options)
+            :  base(options)
         {
             _options = options;
         }

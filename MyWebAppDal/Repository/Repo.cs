@@ -3,7 +3,6 @@ using MyWebApp.Data;
 using MyWebAppDal.DTO;
 using MyWebAppDal.Model;
 using MyWebAppDal.Models;
-using PagedList;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,8 +10,8 @@ using System.Text;
 
 namespace MyWebAppDal.Repository
 {
-   public  class Repo
-    {
+   public class Repo
+   {
 
         public IEnumerable<HouseDto> GetHouses()
         {
