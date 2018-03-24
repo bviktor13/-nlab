@@ -8,6 +8,7 @@ using MyWebApp.Services;
 using MyWebAppDal.Models;
 using MyWebApp.Data;
 using ReflectionIT.Mvc.Paging;
+using MyWebAppDal.Repository;
 
 namespace MyWebApp
 {
@@ -32,7 +33,8 @@ namespace MyWebApp
                 .AddDefaultTokenProviders();
 
             // Add application services.
-            services.AddTransient<IEmailSender, EmailSender>();
+            services.AddTransient<IEmailSender, EmailSender>()
+                    .AddTransient<IRepository, Repository>();
 
             services.AddMvc();
             services.AddPaging();

@@ -8,17 +8,20 @@ using MyWebApp.Models.HomeViewModels;
 using MyWebAppDal.Model;
 using MyWebAppDal.Models;
 using MyWebAppDal.Repository;
-using PagedList;
-using ReflectionIT.Mvc.Paging;
+using Sakura.AspNetCore;
 
 namespace MyWebApp.Controllers
 {
     public class HomeController : Controller
     {
+        private IRepository _repo;
+
+        public HomeController(IRepository repo)
+        {
+            _repo = repo;
+        }
         public IActionResult Index()
         {
-           
-
             return View();
         }
 
@@ -26,10 +29,9 @@ namespace MyWebApp.Controllers
         {
             ViewData["Message"] = "Hirdetes feladása vagy törlése";
 
-            var repo = new Repo();
             AddHouseViewModel newHouse = new AddHouseViewModel();
 
-            //newHouse.Cities = repo.GetCities();
+            //newHouse.Cities = _repo.GetCities();
             newHouse.House = new House();
 
 
@@ -39,48 +41,46 @@ namespace MyWebApp.Controllers
         [HttpPost]
         public ActionResult Save(House house)
         {
-            var repo = new Repo();
-
             if (!ModelState.IsValid)
             {
 
                 var newHouse = new AddHouseViewModel
                 {
                     House = house,
-                   // Cities = repo.GetCities()
+                   // Cities = _repo.GetCities()
                 };
                 return View("Advertisement", newHouse);
             }
             /*  if (house.Id == 0)
               {
-                  repo.context().Houses.Add(house);      
+                  _repo.context().Houses.Add(house);      
               }
               else
               {
-                  var DbHouses = repo.context().Houses.Single(h => h.Id == house.Id);*/
-            var dbHouses = repo.context().Houses.Single(h => h.Id == house.Id);
-                  dbHouses.Price = house.Price;
-                  dbHouses.Animal = house.Animal;
-                  dbHouses.Area = house.Area;
-                  dbHouses.Balcony = house.Balcony;
-                  dbHouses.CityId = house.CityId;
-                  dbHouses.Details = house.Details;
-                  dbHouses.Elevator = house.Elevator;
-                  dbHouses.Image = house.Image;
-                  dbHouses.InnerHeightType = house.InnerHeightType;
-                  dbHouses.RoomNumber = house.RoomNumber;
-                  dbHouses.PartyRoomNumber = house.PartyRoomNumber;
-                  dbHouses.HouseType = house.HouseType;
-                  dbHouses.HeatingType = house.HeatingType;
-                  dbHouses.ForSaleType = house.ForSaleType;
-                  dbHouses.Furnished = house.Furnished;
-                  dbHouses.HouseNumber = house.HouseNumber;
-                  dbHouses.Street = house.Street;
-                  dbHouses.Smoking = house.Smoking;
-              /*}*/
-            repo.context().Houses.Add(dbHouses);
+            //      var DbHouses = _repo.context().Houses.Single(h => h.Id == house.Id);*/
+            //var dbHouses = _repo.context().Houses.Single(h => h.Id == house.Id);
+            //      dbHouses.Price = house.Price;
+            //      dbHouses.Animal = house.Animal;
+            //      dbHouses.Area = house.Area;
+            //      dbHouses.Balcony = house.Balcony;
+            //      dbHouses.CityId = house.CityId;
+            //      dbHouses.Details = house.Details;
+            //      dbHouses.Elevator = house.Elevator;
+            //      dbHouses.Image = house.Image;
+            //      dbHouses.InnerHeightType = house.InnerHeightType;
+            //      dbHouses.RoomNumber = house.RoomNumber;
+            //      dbHouses.PartyRoomNumber = house.PartyRoomNumber;
+            //      dbHouses.HouseType = house.HouseType;
+            //      dbHouses.HeatingType = house.HeatingType;
+            //      dbHouses.ForSaleType = house.ForSaleType;
+            //      dbHouses.Furnished = house.Furnished;
+            //      dbHouses.HouseNumber = house.HouseNumber;
+            //      dbHouses.Street = house.Street;
+            //      dbHouses.Smoking = house.Smoking;
+            //  /*}*/
+            //_repo.context().Houses.Add(dbHouses);
 
-            repo.context().SaveChanges();
+            //_repo.context().SaveChanges();
 
             return RedirectToAction("Houses", "Home");
         }
@@ -101,10 +101,8 @@ namespace MyWebApp.Controllers
         {
             HousesViewModel houses = new HousesViewModel();
 
-            var repo = new Repo();
-
-            houses.Houses = repo.GetHouses();
-            houses.Cities = repo.GetCities();
+            houses.Houses = _repo.GetHouses();
+            houses.Cities = _repo.GetCities();
             houses.HouseSearch = new HouseSearch();
             /*var count = houses.Houses.Count();
             houses.Houses.Skip(page * PageSize).Take(PageSize).ToList();
@@ -117,18 +115,15 @@ namespace MyWebApp.Controllers
         public IActionResult HouseDetails(int id)
         {
 
-            var repo = new Repo();
-            House housedetail = repo.HouseById(id);
+            House housedetail = _repo.HouseById(id);
 
             return View(housedetail);
         }
 
         public IActionResult GetHouses(int page = 1)
         {
-
-            var repo = new Repo();
             List<House> houses;
-            houses = repo.GetMyHouses();
+            houses = _repo.GetMyHouses();
             int pageSize = 1;
             int pageNumber = 1;
 
@@ -137,9 +132,7 @@ namespace MyWebApp.Controllers
 
         public IActionResult UserDetails(string id)
         {
-
-            var repo = new Repo();
-            ApplicationUser userdetails = repo.UserById(id);
+            ApplicationUser userdetails = _repo.UserById(id);
 
             return View(userdetails);
 
@@ -147,8 +140,8 @@ namespace MyWebApp.Controllers
 
         /*public async Task<IActionResult> Myhouses(int page = 1)
         {
-            var repo = new Repo();
-            var houses = repo.GetHouses().OrderBy(h => h.Id);
+            var _repo = new _repo();
+            var houses = _repo.GetHouses().OrderBy(h => h.Id);
             //var model = await PagingList.CreateAsync(houses, 2, page);
 
            // return View(model);
