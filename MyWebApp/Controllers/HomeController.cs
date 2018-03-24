@@ -57,30 +57,30 @@ namespace MyWebApp.Controllers
               }
               else
               {
-                  var DbHouses = _repo.context().Houses.Single(h => h.Id == house.Id);*/
-            var dbHouses = _repo.context().Houses.Single(h => h.Id == house.Id);
-                  dbHouses.Price = house.Price;
-                  dbHouses.Animal = house.Animal;
-                  dbHouses.Area = house.Area;
-                  dbHouses.Balcony = house.Balcony;
-                  dbHouses.CityId = house.CityId;
-                  dbHouses.Details = house.Details;
-                  dbHouses.Elevator = house.Elevator;
-                  dbHouses.Image = house.Image;
-                  dbHouses.InnerHeightType = house.InnerHeightType;
-                  dbHouses.RoomNumber = house.RoomNumber;
-                  dbHouses.PartyRoomNumber = house.PartyRoomNumber;
-                  dbHouses.HouseType = house.HouseType;
-                  dbHouses.HeatingType = house.HeatingType;
-                  dbHouses.ForSaleType = house.ForSaleType;
-                  dbHouses.Furnished = house.Furnished;
-                  dbHouses.HouseNumber = house.HouseNumber;
-                  dbHouses.Street = house.Street;
-                  dbHouses.Smoking = house.Smoking;
-              /*}*/
-            _repo.context().Houses.Add(dbHouses);
+            //      var DbHouses = _repo.context().Houses.Single(h => h.Id == house.Id);*/
+            //var dbHouses = _repo.context().Houses.Single(h => h.Id == house.Id);
+            //      dbHouses.Price = house.Price;
+            //      dbHouses.Animal = house.Animal;
+            //      dbHouses.Area = house.Area;
+            //      dbHouses.Balcony = house.Balcony;
+            //      dbHouses.CityId = house.CityId;
+            //      dbHouses.Details = house.Details;
+            //      dbHouses.Elevator = house.Elevator;
+            //      dbHouses.Image = house.Image;
+            //      dbHouses.InnerHeightType = house.InnerHeightType;
+            //      dbHouses.RoomNumber = house.RoomNumber;
+            //      dbHouses.PartyRoomNumber = house.PartyRoomNumber;
+            //      dbHouses.HouseType = house.HouseType;
+            //      dbHouses.HeatingType = house.HeatingType;
+            //      dbHouses.ForSaleType = house.ForSaleType;
+            //      dbHouses.Furnished = house.Furnished;
+            //      dbHouses.HouseNumber = house.HouseNumber;
+            //      dbHouses.Street = house.Street;
+            //      dbHouses.Smoking = house.Smoking;
+            //  /*}*/
+            //_repo.context().Houses.Add(dbHouses);
 
-            _repo.context().SaveChanges();
+            //_repo.context().SaveChanges();
 
             return RedirectToAction("Houses", "Home");
         }
