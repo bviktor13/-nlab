@@ -10,7 +10,7 @@
     <PackageReference Include="bootstrap" Version="4.0.0" />
     <PackageReference Include="knockoutjs" Version="3.4.2" />
     <PackageReference Include="Microsoft.AspNetCore.All" Version="2.0.5" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.0-preview1-final" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.0.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.0.2" PrivateAssets="All" />
     <PackageReference Include="ReflectionIT.Mvc.Paging" Version="2.4.0" />
     <PackageReference Include="Sakura.AspNetCore.PagedList" Version="2.0.2" />
