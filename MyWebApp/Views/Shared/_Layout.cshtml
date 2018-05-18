@@ -1,4 +1,10 @@
-﻿<!DOCTYPE html>
+﻿@using Microsoft.AspNetCore.Identity
+@using MyWebAppDal.Models
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8" />
@@ -17,27 +23,45 @@
     </environment>
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">Ingatlan kereső</a>
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a asp-area="" asp-controller="Search" asp-action="Index" class="navbar-brand">Ingatlan kereső</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    <ul class="nav navbar-nav">
+                        <li><a asp-area="" asp-controller="Search" asp-action="Index">Keresés</a></li>
+                        <li><a asp-area="" asp-controller="Advertisement" asp-action="Index">Hirdetés feladása</a></li>
+                        <li><a asp-area="" asp-controller="Favourite" asp-action="Index">Kedvencek</a></li>
+                    </ul>
+                    @await Html.PartialAsync("_LoginPartial")
+                </div>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Keresés</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Advertisement">Hirdetés feladása</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Favourite">Kedvencek</a></li>
-                </ul>
-                @await Html.PartialAsync("_LoginPartial")
+        </nav>
+    }
+
+    else
+    {
+        <nav class="navbar navbar-inverse navbar-fixed-top">
+            <div class="container">
+                <div class="navbar-header">
+                    <a asp-area="" asp-controller="Search" asp-action="Index" class="navbar-brand">Ingatlan kereső</a>
+                </div>
+                <div class="navbar-collapse collapse">
+                    @await Html.PartialAsync("_LoginPartial")
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
+
+    }
     <div class="container body-content">
         @RenderBody()
         <hr />
@@ -49,10 +73,10 @@
                 <P> Telefonszám :06/20-345-6754</P>
                 <P> Nyitvatartás: Munkanapokon 10:00-18:00-ig</P>
             </div>
-            <div  class="col-md-3">
+            <div class="col-md-3">
                 <p>Térkép helye </p>
             </div>
-</footer>
+        </footer>
     </div>
 
     <environment include="Development">

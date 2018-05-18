@@ -1,0 +1,205 @@
+﻿@using  MyWebAppDal.Models
+@using  MyWebAppDal.DTO
+@model MyWebApp.Models.AdvertisementViewModels.AddHouseViewModel
+@{
+    /**/
+
+    ViewBag.Title = "New";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/site.css" rel="stylesheet" />
+
+
+<div class="form-group col-sm-10">
+    <center><h2 class="header">Hirdetés feladása</h2></center>
+</div>
+
+<div class="row">
+    <form class="form-horizontal" method="post" enctype="multipart/form-data">
+        <div class="col-sm-6">
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label text-right" for="">Eladó/Kiadó:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.House.ForSaleType" asp-items="Html.GetEnumSelectList(typeof (ForSaleType))"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="">Háztípus:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.House.HouseType" asp-items="Html.GetEnumSelectList(typeof (HouseType))"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="">Város:</label>
+                <div class="col-sm-5">
+                    @Html.DropDownListFor(Model => Model.House.CityId, new SelectList(Model.Cities, "Id", "Name"), "", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="">Utca:</label>
+                <div class="col-sm-5">
+                    @Html.TextBoxFor(Model => Model.House.Street, new { placeholder = "pl: Nagy Lajos utca" , @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="">Házszám:</label>
+                <div class="col-sm-5">
+                    @Html.TextBoxFor(Model => Model.House.HouseNumber, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="">Ár:</label>
+                <div class="col-sm-5">
+                    @Html.TextBoxFor(Model => Model.House.Price, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="">Alap terület:</label>
+                <div class="col-sm-5">
+                    @Html.TextBoxFor(Model => Model.House.Area, new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="">Szobák és félszobák száma:</label>
+                <table class="col-sm-5 control-label">
+                    <tr>
+                        <td>  @Html.TextBoxFor(Model => Model.House.RoomNumber, new { placeholder ="Szobák",@class = "form-control" })
+                        <td>  +
+                        <td>  @Html.TextBoxFor(Model => Model.House.PartyRoomNumber, new { placeholder ="Félszobák", @class = "form-control" })
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="">Fűtés:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.House.HeatingType" asp-items="Html.GetEnumSelectList(typeof (HeatingType))"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 control-label" for="">Belmagasság:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.House.InnerHeightType" asp-items="Html.GetEnumSelectList(typeof (InnerHeightType))"></select>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <div class="form-group">
+                <label class="col-sm-3" for="">Bútorozott:</label>
+                <div class="col-sm-5">
+                    @Html.CheckBoxFor(Model => Model.House.Furnished)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3 " for="">Háziállat:</label>
+                <div class="col-sm-5">
+                    @Html.CheckBoxFor(Model => Model.House.Animal)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3" for="">Erkély:</label>
+                <div class="col-sm-5">
+                    @Html.CheckBoxFor(Model => Model.House.Balcony)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3" for="">Lift:</label>
+                <div class="col-sm-5">
+                    @Html.CheckBoxFor(Model => Model.House.Elevator)
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3" for="">Dohányzás:</label>
+                <div class="col-sm-5">
+                    @Html.CheckBoxFor(Model => Model.House.Smoking)
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label class="col-sm-3" for="">Képek feltöltése: </label>
+                <input type="hidden" asp-for="House.Image" />
+            </div>
+            <div class="form-group">
+                <div class="col-sm-5">
+                    <input type="file" name="files" multiple /><br />
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-3" for="">Leírás:</label>
+            </div>
+            <p></p>
+            <textarea class="form-control" rows="8" asp-for="@Model.House.Details"></textarea>
+        </div>
+        <div class="form-group col-sm-10">
+            <center><input type="submit" value="Feladás" class="btn btn-success"></center>
+        </div>
+    </form>
+
+</div>
+<div class="form-group col-sm-10">
+    <center><h2>Hirdetéseid</h2></center>    
+</div>
+    @foreach (HouseDto House in Model.UserHouses)
+    {
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="content">
+                    <div class="col-sm-10">
+                        <div style="cursor: pointer;" onclick="window.location='https://localhost:44303/Home/HouseDetails/@House.Id';">
+                            <img src="~/HouseUploads/@House.Id/@House.Image" class="  img-thumbnail" width=200 />
+                            @if (House.ForSaleType.Value == ForSaleType.Elado)
+                            {
+                                <p>@House.Price MFt </p>
+                            }
+                            else
+                            {
+                                <p>@House.Price Ft/hó </p>
+                            }
+                            <p>@Model.Cities.ElementAt(House.CityId.Value - 1).Name, @House.Street  @House.HouseNumber.   </p>
+                            <p>@House.Area m² </p>
+                            @if (House.RoomNumber != 0 && House.PartyRoomNumber != 0)
+                            {
+                                <p>@House.RoomNumber + @House.PartyRoomNumber félszoba </p>
+                            }
+                            else if (House.RoomNumber != 0 && House.PartyRoomNumber == 0)
+                            {
+                                <p>@House.RoomNumber szoba </p>
+                            }
+                            else if (House.RoomNumber == 0 && House.PartyRoomNumber != 0)
+                            {
+                                <p>@House.PartyRoomNumber félszoba </p>
+                            }
+                            else if (House.RoomNumber == 0 && House.PartyRoomNumber == 0)
+                            {
+                                <p> Nincs megadva</p>
+                            }
+                        </div>
+                    </div>
+                </div>
+                <p></p>
+            </div>
+            <div class="col-sm-3">
+
+                <center>
+                    <div>
+                        <a class="btn btn-danger" asp-action="DeleteMyHouse" asp-route-Id="@House.Id">
+                            Törlés
+                        </a>
+                    </div>
+                    <p></p>
+                    <p></p>
+                    <div>
+                        <a class="btn btn-success" asp-action="Edit" asp-route-Id="@House.Id">
+                            Szerkesztés
+                        </a>
+                    </div>
+                </center>
+            </div>
+        </div>
+    }
+
+
+
+

@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity;
-using MyWebAppDal.Model;
+using MyWebAppDal.DTO;
 
 namespace MyWebAppDal.Models
 {
@@ -13,9 +11,8 @@ namespace MyWebAppDal.Models
         public string Image { get; set; }
         public DateTime BirthDate { get; set; }
         public string FullName { get; set; }
-
-       // private IEnumerable<Favourite> Favourites { get; set; } //ICollection
-       // private IList<House> MyHouses { get; set; }
+        public List<HouseDto> MyHouses { get; set; }
+        public List<FavouriteDto> Favourites { get; set; }
 
     }
 }

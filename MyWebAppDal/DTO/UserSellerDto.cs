@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MyWebAppDal.DTO
 {
-    class UserDto
+   public class UserSellerDto
     {
         public string Id { get; set; }
         public string FullName { get; set; }

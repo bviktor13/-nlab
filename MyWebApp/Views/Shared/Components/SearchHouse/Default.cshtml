@@ -1,0 +1,104 @@
+﻿@using MyWebAppDal.DTO
+@using MyWebAppDal.Models
+
+@{
+    ViewData["Title"] = "Default";
+}
+
+@{
+    IEnumerable<CityDto> cities = ViewData["Cities"] as IEnumerable<CityDto>;
+}
+
+@model HouseSearchDto
+
+<h2 class="header">Kereső</h2>
+
+    <div class="col-sm-4">
+        <form class="form-horizontal" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label text-right" for="">Eladó/Kiadó:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.ForSaleType" asp-items="Html.GetEnumSelectList(typeof (ForSaleType))"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Háztípus:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.HouseType" asp-items="Html.GetEnumSelectList(typeof (HouseType))"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Város:</label>
+                <div class="col-sm-5">
+                    @Html.DropDownListFor(m => cities, new SelectList(cities, "Id", "Name"), "", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Ár:</label>
+                <table class="col-sm-6">
+                    <tr>
+                        <td>  @Html.TextBoxFor(model => Model.MinPrice, new { placeholder = "Min", @class = "form-control" })
+                        <td>  -
+                        <td>  @Html.TextBoxFor(model => Model.MaxPrice, new { placeholder = "Max", @class = "form-control" })
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Alapterület: </label>
+                <table class="col-sm-6">
+                    <tr>
+                        <td class="">  @Html.TextBoxFor(Model => Model.MinArea, new { placeholder = "Min", @class = "form-control" })
+                        <td>  -
+                        <td class="">  @Html.TextBoxFor(Model => Model.MaxArea, new { placeholder = "Max", @class = "form-control" })
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Szobaszám: </label>
+                <table class="col-sm-6">
+                    <tr>
+                        <td>  @Html.TextBoxFor(Model => Model.RoomNumber, new { placeholder = "Szobák", @class = "form-control" })
+                        <td>  +
+                        <td>  @Html.TextBoxFor(Model => Model.PartyRoomNumber, new { placeholder = "Fél szobák", @class = "form-control" })
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Fűtés:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.HeatingType" asp-items="Html.GetEnumSelectList(typeof (HeatingType))"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Belmagasság:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.InnerHeightType" asp-items="Html.GetEnumSelectList(typeof (InnerHeightType))"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5" for="">Bútorozott:</label>
+                @Html.CheckBoxFor(Model => Model.Furnished)
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5" for="">Kisállat:</label>
+                @Html.CheckBoxFor(Model => Model.Animal)
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5" for="">Erkély:</label>
+                @Html.CheckBoxFor(Model => Model.Balcony)
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5" for="">Lift:</label>
+                @Html.CheckBoxFor(Model => Model.Elevator)
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5" for="">Dohányzás: </label>
+                @Html.CheckBoxFor(Model => Model.Smoking)
+            </div>
+            <button type="submit" class="btn bg-primary col-sm-offset-4">
+                Keresés
+            </button>
+        </form>
+    </div>
+

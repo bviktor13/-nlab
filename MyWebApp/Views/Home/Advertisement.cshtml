@@ -1,4 +1,5 @@
-﻿@using  MyWebAppDal.Model
+﻿@using  MyWebAppDal.Models
+@using  MyWebAppDal.DTO
 @model MyWebApp.Models.HomeViewModels.AddHouseViewModel
 @{
     /**/
@@ -7,84 +8,63 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<link href="~/css/site.css" rel="stylesheet" />
+
 <h2>Hirdetés feladása</h2>
 
-@using (Html.BeginForm("Save", "Home"))
-{@Html.ValidationSummary(true, "Please fix the fllowing errors.")
+@foreach (HouseDto House in Model.UserHouses)
+{
 <div class="row">
-    <div class="col-sm-4">
-        <form method="post">
-            <div asp-validation-summary="All" class="text-danger"></div>
-            <div class="form-group">
-                <label for="">Eladó/Kiadó:</label>
-                <select asp-for="@Model.House.ForSaleType" asp-items="Html.GetEnumSelectList(typeof (ForSaleType))"></select>
-            </div>
-            <div class="form-group">
-                <label for="">Ház típusa:</label>
-                <select asp-for="@Model.House.HouseType" asp-items="Html.GetEnumSelectList(typeof (HouseType))"></select>
-            </div>
-            <div class="form-group">
-                <label for="">Város:</label>
-                @* @Html.DropDownListFor(Model => Model.Cities, new SelectList(Model.Cities, "Id", "Name"), "", new { @class = "form-control" })*@
-            </div>
-                    <div class="form-group">
-                        <label for="">Utca:</label>
-                        @Html.TextBoxFor(Model => Model.House.Street, new { @class = "form-control" })
-                    </div>
-                    <div class="form-group">
-                        <label for="">Házszám:</label>
-                        @Html.TextBoxFor(Model => Model.House.HouseNumber, new { @class = "form-control" })
-                    </div>
-                    <div class="form-group">
-                        <label for="">Ár:</label>
-                        @Html.TextBoxFor(Model => Model.House.Price, new { @class = "form-control" })
-                    </div>
-                    <div class="form-group">
-                        <label for="">Alap terület:</label>
-                        @Html.TextBoxFor(Model => Model.House.Area, new { @class = "form-control" })
-                    </div>
-                    <div class="form-group">
-                        <label for="">Szobák és félszobák száma:</label>
-                        <table>
-                            <tr>
-                                <td>  @Html.TextBoxFor(Model => Model.House.RoomNumber, new { @class = "form-control" })
-                                <td>  +
-                                <td>  @Html.TextBoxFor(Model => Model.House.PartyRoomNumber, new { @class = "form-control" })
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="form-group">
-                        <label for="">Fűtés:</label>
-                        <select asp-for="@Model.House.HeatingType" asp-items="Html.GetEnumSelectList(typeof (HeatingType))"></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="">Belmagasság:</label>
-                        <select asp-for="@Model.House.InnerHeightType" asp-items="Html.GetEnumSelectList(typeof (InnerHeightType))"></select>
-                    </div>
-                    <div class="form-group">
-                        <label for="">Bútorozott:</label>
-                        @Html.CheckBoxFor(Model => Model.House.Furnished)
-                    </div>
-                    <div class="form-group">
-                        <label for="">Állat megengedett::</label>
-                        @Html.CheckBoxFor(Model => Model.House.Animal)
-                    </div>
-                    <div class="form-group">
-                        <label for="">Erkély:</label>
-                        @Html.CheckBoxFor(Model => Model.House.Balcony)
-                    </div>
-                    <div class="form-group">
-                        <label for="">Lift:</label>
-                        @Html.CheckBoxFor(Model => Model.House.Elevator)
-                    </div>
-                    <div class="form-group">
-                        <label for="">Dohányzás megengedett:</label>
-                        @Html.CheckBoxFor(Model => Model.House.Smoking)
-                    </div>
-                    <button type="submit" class="btn bg-primary">Feladás</button>
-                </form>
+    <div class="col-sm-6">
+        <div class="content">
+            <div style="cursor: pointer;" onclick="window.location='https://localhost:44303/Home/HouseDetails/@House.Id';">
+                <img src="http://www.design3d.hu/latvanyterv/csaladi-haz-budapest-13.jpg" width=200>
+                <p>@House.Price Ft </p>
+                <p>@Model.Cities.ElementAt(House.CityId.Value - 1).Name , @House.Street , @House.HouseNumber.   </p>
+                <p>@House.Area m^2 </p>
+                <p>@House.RoomNumber + @House.PartyRoomNumber félszoba </p>
             </div>
         </div>
+        <p></p>
+    </div>
+    <div class="col-sm-2">
+      <center>  <a class="btn btn-danger" asp-action="DeleteMyHouse" asp-route-Id="@House.Id">
+            Törlés
+        </a></center>
+    </div>
+  </div>
+}
 
-        @Html.HiddenFor(Model => Model.House.Id)
-        }
+
+
+<form class="form-horizontal">
+    <div class="form-group">
+        <label for="" class="col-sm-2 control-label">Email</label>
+        <div class="col-sm-10">
+            <input type="email" class="form-control" id="" placeholder="Email">
+        </div>
+    </div>
+    <div class="form-group">
+        <label for="inputPassword3" class="col-sm-2 control-label">Password</label>
+        <div class="col-sm-10">
+            <input type="password" class="form-control" id="inputPassword3" placeholder="Password">
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <div class="checkbox">
+                <label>
+                    <input type="checkbox"> Remember me
+                </label>
+            </div>
+        </div>
+    </div>
+    <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+            <button type="submit" class="btn btn-default">Sign in</button>
+        </div>
+    </div>
+</form>
+
+    </div>
+

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using MyWebAppDal.DTO;
 using MyWebAppDal.Models;
 
-namespace MyWebApp.Models.HomeViewModels
+namespace MyWebApp.Models.AdvertisementViewModels
 {
     public class AddHouseViewModel
     {

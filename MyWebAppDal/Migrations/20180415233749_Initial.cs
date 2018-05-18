@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore.Metadata;
+﻿using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
+using System;
+using System.Collections.Generic;
 
 namespace MyWebAppDal.Migrations
 {
@@ -14,9 +14,9 @@ namespace MyWebAppDal.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
+                    ConcurrencyStamp = table.Column<string>(nullable: true),
                     Name = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedName = table.Column<string>(maxLength: 256, nullable: true),
-                    ConcurrencyStamp = table.Column<string>(nullable: true)
+                    NormalizedName = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -28,23 +28,23 @@ namespace MyWebAppDal.Migrations
                 columns: table => new
                 {
                     Id = table.Column<string>(nullable: false),
-                    UserName = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
-                    Email = table.Column<string>(maxLength: 256, nullable: true),
-                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
-                    EmailConfirmed = table.Column<bool>(nullable: false),
-                    PasswordHash = table.Column<string>(nullable: true),
-                    SecurityStamp = table.Column<string>(nullable: true),
+                    AccessFailedCount = table.Column<int>(nullable: false),
+                    BirthDate = table.Column<DateTime>(nullable: false),
                     ConcurrencyStamp = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(maxLength: 256, nullable: true),
+                    EmailConfirmed = table.Column<bool>(nullable: false),
+                    FullName = table.Column<string>(nullable: true),
+                    Image = table.Column<string>(nullable: true),
+                    LockoutEnabled = table.Column<bool>(nullable: false),
+                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
+                    NormalizedEmail = table.Column<string>(maxLength: 256, nullable: true),
+                    NormalizedUserName = table.Column<string>(maxLength: 256, nullable: true),
+                    PasswordHash = table.Column<string>(nullable: true),
                     PhoneNumber = table.Column<string>(nullable: true),
                     PhoneNumberConfirmed = table.Column<bool>(nullable: false),
+                    SecurityStamp = table.Column<string>(nullable: true),
                     TwoFactorEnabled = table.Column<bool>(nullable: false),
-                    LockoutEnd = table.Column<DateTimeOffset>(nullable: true),
-                    LockoutEnabled = table.Column<bool>(nullable: false),
-                    AccessFailedCount = table.Column<int>(nullable: false),
-                    Image = table.Column<string>(nullable: true),
-                    BirthDate = table.Column<DateTime>(nullable: false),
-                    FullName = table.Column<string>(nullable: true)
+                    UserName = table.Column<string>(maxLength: 256, nullable: true)
                 },
                 constraints: table =>
                 {
@@ -65,14 +65,28 @@ namespace MyWebAppDal.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Favourites",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ApplicationUserId = table.Column<string>(nullable: true),
+                    HouseId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Favourites", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    RoleId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    ClaimValue = table.Column<string>(nullable: true),
+                    RoleId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -91,9 +105,9 @@ namespace MyWebAppDal.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    UserId = table.Column<string>(nullable: false),
                     ClaimType = table.Column<string>(nullable: true),
-                    ClaimValue = table.Column<string>(nullable: true)
+                    ClaimValue = table.Column<string>(nullable: true),
+                    UserId = table.Column<string>(nullable: false)
                 },
                 constraints: table =>
                 {
@@ -171,30 +185,77 @@ namespace MyWebAppDal.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "FavouriteDto",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ApplicationUserId = table.Column<string>(nullable: true),
+                    HouseId = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_FavouriteDto", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_FavouriteDto_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HouseDto",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    ApplicationUserId = table.Column<string>(nullable: true),
+                    Area = table.Column<int>(nullable: true),
+                    CityId = table.Column<int>(nullable: true),
+                    HouseNumber = table.Column<int>(nullable: true),
+                    Image = table.Column<string>(nullable: true),
+                    PartyRoomNumber = table.Column<int>(nullable: true),
+                    Price = table.Column<int>(nullable: true),
+                    RoomNumber = table.Column<int>(nullable: true),
+                    Street = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HouseDto", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_HouseDto_AspNetUsers_ApplicationUserId",
+                        column: x => x.ApplicationUserId,
+                        principalTable: "AspNetUsers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Houses",
                 columns: table => new
                 {
-                    ApplicationUserId = table.Column<string>(nullable: true),
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ForSaleType = table.Column<int>(nullable: true),
-                    Price = table.Column<int>(nullable: true),
-                    CityId = table.Column<int>(nullable: true),
-                    Street = table.Column<string>(nullable: true),
-                    HouseNumber = table.Column<int>(nullable: true),
-                    Area = table.Column<int>(nullable: true),
-                    RoomNumber = table.Column<int>(nullable: true),
-                    PartyRoomNumber = table.Column<int>(nullable: true),
-                    HouseType = table.Column<int>(nullable: true),
-                    HeatingType = table.Column<int>(nullable: true),
-                    Furnished = table.Column<bool>(nullable: false),
                     Animal = table.Column<bool>(nullable: false),
+                    ApplicationUserId = table.Column<string>(nullable: true),
+                    Area = table.Column<int>(nullable: true),
                     Balcony = table.Column<bool>(nullable: false),
-                    Elevator = table.Column<bool>(nullable: false),
-                    Smoking = table.Column<bool>(nullable: false),
-                    InnerHeightType = table.Column<int>(nullable: true),
+                    CityId = table.Column<int>(nullable: true),
                     Details = table.Column<string>(nullable: true),
-                    Image = table.Column<string>(nullable: true)
+                    Elevator = table.Column<bool>(nullable: false),
+                    ForSaleType = table.Column<int>(nullable: true),
+                    Furnished = table.Column<bool>(nullable: false),
+                    HeatingType = table.Column<int>(nullable: true),
+                    HouseNumber = table.Column<int>(nullable: true),
+                    HouseType = table.Column<int>(nullable: true),
+                    Image = table.Column<string>(nullable: true),
+                    InnerHeightType = table.Column<int>(nullable: true),
+                    PartyRoomNumber = table.Column<int>(nullable: true),
+                    Price = table.Column<int>(nullable: true),
+                    RoomNumber = table.Column<int>(nullable: true),
+                    Smoking = table.Column<bool>(nullable: false),
+                    Street = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -213,23 +274,23 @@ namespace MyWebAppDal.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    ForSaleType = table.Column<int>(nullable: true),
-                    MinPrice = table.Column<int>(nullable: true),
-                    MaxPrice = table.Column<int>(nullable: true),
-                    CityId = table.Column<int>(nullable: true),
-                    Street = table.Column<string>(nullable: true),
-                    MinArea = table.Column<int>(nullable: true),
-                    MaxArea = table.Column<int>(nullable: true),
-                    RoomNumber = table.Column<int>(nullable: true),
-                    PartyRoomNumber = table.Column<int>(nullable: true),
-                    HouseType = table.Column<int>(nullable: true),
-                    HeatingType = table.Column<int>(nullable: true),
-                    Furnished = table.Column<bool>(nullable: false),
                     Animal = table.Column<bool>(nullable: false),
                     Balcony = table.Column<bool>(nullable: false),
+                    CityId = table.Column<int>(nullable: true),
                     Elevator = table.Column<bool>(nullable: false),
+                    ForSaleType = table.Column<int>(nullable: true),
+                    Furnished = table.Column<bool>(nullable: false),
+                    HeatingType = table.Column<int>(nullable: true),
+                    HouseType = table.Column<int>(nullable: true),
+                    InnerHeightType = table.Column<int>(nullable: true),
+                    MaxArea = table.Column<int>(nullable: true),
+                    MaxPrice = table.Column<int>(nullable: true),
+                    MinArea = table.Column<int>(nullable: true),
+                    MinPrice = table.Column<int>(nullable: true),
+                    PartyRoomNumber = table.Column<int>(nullable: true),
+                    RoomNumber = table.Column<int>(nullable: true),
                     Smoking = table.Column<bool>(nullable: false),
-                    InnerHeightType = table.Column<int>(nullable: true)
+                    Street = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -282,6 +343,16 @@ namespace MyWebAppDal.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
+                name: "IX_FavouriteDto_ApplicationUserId",
+                table: "FavouriteDto",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HouseDto_ApplicationUserId",
+                table: "HouseDto",
+                column: "ApplicationUserId");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Houses_CityId",
                 table: "Houses",
                 column: "CityId");
@@ -308,6 +379,15 @@ namespace MyWebAppDal.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUserTokens");
+
+            migrationBuilder.DropTable(
+                name: "FavouriteDto");
+
+            migrationBuilder.DropTable(
+                name: "Favourites");
+
+            migrationBuilder.DropTable(
+                name: "HouseDto");
 
             migrationBuilder.DropTable(
                 name: "Houses");

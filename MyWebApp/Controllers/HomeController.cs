@@ -1,45 +1,60 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MyWebApp.Models;
 using MyWebApp.Models.HomeViewModels;
-using MyWebAppDal.Model;
-using MyWebAppDal.Models;
+using MyWebAppDal.DTO;
 using MyWebAppDal.Repository;
-using Sakura.AspNetCore;
+using ReflectionIT.Mvc.Paging;
 
 namespace MyWebApp.Controllers
 {
     public class HomeController : Controller
     {
         private IRepository _repo;
+        private readonly IHostingEnvironment _environment;
 
-        public HomeController(IRepository repo)
+        public HomeController(IRepository repo , IHostingEnvironment enviroment)
         {
             _repo = repo;
+            _environment = enviroment;
         }
         public IActionResult Index()
         {
             return View();
         }
 
-        public IActionResult Advertisement()
+        [HttpGet]
+        public async Task<IActionResult> Advertisement()
         {
             ViewData["Message"] = "Hirdetes feladása vagy törlése";
 
-            AddHouseViewModel newHouse = new AddHouseViewModel();
+            var cities = _repo.GetCities().ToList();
+            
+            var loggedInUserId = HttpContext.User.Claims.FirstOrDefault().Value;
 
-            //newHouse.Cities = _repo.GetCities();
-            newHouse.House = new House();
+            var userHouses = _repo.GetHouses().Where(user => user.ApplicationUserId == loggedInUserId).ToList();
+
+            var newHouse = new AddHouseViewModel
+            {
+                Cities = cities,
+                House = new HouseDetailsDto(),
+                UserHouses = userHouses
+            };
+
+
 
 
             return View(newHouse);
         }
 
         [HttpPost]
-        public ActionResult Save(House house)
+        public async Task<IActionResult> Advertisement(HouseDetailsDto house, List<IFormFile> files)
         {
             if (!ModelState.IsValid)
             {
@@ -47,49 +62,68 @@ namespace MyWebApp.Controllers
                 var newHouse = new AddHouseViewModel
                 {
                     House = house,
-                   // Cities = _repo.GetCities()
+                    Cities = _repo.GetCities().ToList()
                 };
+
+
                 return View("Advertisement", newHouse);
             }
-            /*  if (house.Id == 0)
-              {
-                  _repo.context().Houses.Add(house);      
-              }
-              else
-              {
-            //      var DbHouses = _repo.context().Houses.Single(h => h.Id == house.Id);*/
-            //var dbHouses = _repo.context().Houses.Single(h => h.Id == house.Id);
-            //      dbHouses.Price = house.Price;
-            //      dbHouses.Animal = house.Animal;
-            //      dbHouses.Area = house.Area;
-            //      dbHouses.Balcony = house.Balcony;
-            //      dbHouses.CityId = house.CityId;
-            //      dbHouses.Details = house.Details;
-            //      dbHouses.Elevator = house.Elevator;
-            //      dbHouses.Image = house.Image;
-            //      dbHouses.InnerHeightType = house.InnerHeightType;
-            //      dbHouses.RoomNumber = house.RoomNumber;
-            //      dbHouses.PartyRoomNumber = house.PartyRoomNumber;
-            //      dbHouses.HouseType = house.HouseType;
-            //      dbHouses.HeatingType = house.HeatingType;
-            //      dbHouses.ForSaleType = house.ForSaleType;
-            //      dbHouses.Furnished = house.Furnished;
-            //      dbHouses.HouseNumber = house.HouseNumber;
-            //      dbHouses.Street = house.Street;
-            //      dbHouses.Smoking = house.Smoking;
-            //  /*}*/
-            //_repo.context().Houses.Add(dbHouses);
 
-            //_repo.context().SaveChanges();
 
-            return RedirectToAction("Houses", "Home");
+            house.ApplicationUserId = HttpContext.User.Claims.FirstOrDefault().Value;
+
+            if (files != null)
+            {
+                _repo.AddToDataBase(house);
+
+                int houseId = _repo.GetHouses().LastOrDefault().Id;
+
+                foreach (var file in files)
+                {
+                    string uploadPath = Path.Combine(_environment.WebRootPath, "HouseUploads");
+                    Directory.CreateDirectory(Path.Combine(uploadPath, houseId.ToString()));
+                    string fileName = Path.GetFileName(file.FileName);
+
+                    using (FileStream fs = new FileStream(Path.Combine(uploadPath, houseId.ToString(), fileName), FileMode.Create))
+                    {
+                        await file.CopyToAsync(fs);
+
+                    }
+
+                    house.Image = fileName;
+                }
+            }
+           
+            return RedirectToAction(nameof(Advertisement));
         }
 
         public IActionResult Favourite()
         {
             ViewData["Message"] = "A kedvenceid.";
 
-            return View();
+            var loggedInUserId = HttpContext.User.Claims.FirstOrDefault().Value;
+
+            var cities = _repo.GetCities().ToList();
+            var favouriteHouses = _repo.GetUserFavouriteHouses(loggedInUserId);
+
+            var userFavourites = new FavouritesViewModel
+            {
+                Cities = cities,
+                FavouriteHouses = favouriteHouses,
+            };
+            
+            return View(userFavourites);
+        }
+
+        public IActionResult DeleteMyFavourite(int Id)
+        {
+            var loggedInUserId = HttpContext.User.Claims.FirstOrDefault().Value;
+
+            int favouriteId = _repo.FindFavouriteId(loggedInUserId, Id);
+
+            _repo.DeleteUserFavourite(favouriteId);
+
+            return RedirectToAction(nameof(Favourite));
         }
 
         public IActionResult Error()
@@ -103,7 +137,7 @@ namespace MyWebApp.Controllers
 
             houses.Houses = _repo.GetHouses();
             houses.Cities = _repo.GetCities();
-            houses.HouseSearch = new HouseSearch();
+            houses.HouseSearch = new HouseSearchDto();
             /*var count = houses.Houses.Count();
             houses.Houses.Skip(page * PageSize).Take(PageSize).ToList();
             this.ViewBag.MaxPage =  (count / PageSize) - (count % PageSize == 0 ? 1 : 0);
@@ -115,36 +149,26 @@ namespace MyWebApp.Controllers
         public IActionResult HouseDetails(int id)
         {
 
-            House housedetail = _repo.HouseById(id);
 
-            return View(housedetail);
+            HouseDetailsView houseDetails = new HouseDetailsView();
+
+            houseDetails.HouseDetails = _repo.HouseById(id);
+
+            houseDetails.City = _repo.CityById(houseDetails.HouseDetails.CityId.Value);
+            
+
+
+            return View(houseDetails);
         }
 
-        public IActionResult GetHouses(int page = 1)
-        {
-            List<House> houses;
-            houses = _repo.GetMyHouses();
-            int pageSize = 1;
-            int pageNumber = 1;
 
-            return View(houses.ToPagedList(pageNumber, pageSize));
+
+        public IActionResult DeleteMyHouse(int id)
+        {
+            _repo.DeleteHouse(id);
+
+             return RedirectToAction("Advertisement", "Home");
         }
 
-        public IActionResult UserDetails(string id)
-        {
-            ApplicationUser userdetails = _repo.UserById(id);
-
-            return View(userdetails);
-
-        }
-
-        /*public async Task<IActionResult> Myhouses(int page = 1)
-        {
-            var _repo = new _repo();
-            var houses = _repo.GetHouses().OrderBy(h => h.Id);
-            //var model = await PagingList.CreateAsync(houses, 2, page);
-
-           // return View(model);
-        }*/
     }
 }

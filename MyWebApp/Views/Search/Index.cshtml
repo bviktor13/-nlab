@@ -1,0 +1,183 @@
+﻿@using  MyWebAppDal.Models
+@using  MyWebAppDal.DTO
+@using  MyWebApp.Models.SearchViewModels
+
+
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+
+@model SearchHousesViewModels
+
+@{
+    IEnumerable<CityDto> cities = ViewData["Cities"] as IEnumerable<CityDto>;
+}
+
+<link href="~/css/site.css" rel="stylesheet" />
+
+
+<h2 class="header">Kereső</h2>
+
+<div class="row">
+    <div class="col-sm-4">
+        <form class="form-horizontal" method="post">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label text-right" for="">Eladó/Kiadó:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.Search.ForSaleType" asp-items="Html.GetEnumSelectList(typeof (ForSaleType))"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Háztípus:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.Search.HouseType" asp-items="Html.GetEnumSelectList(typeof (HouseType))"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Város:</label>
+                <div class="col-sm-5">
+                    @Html.DropDownListFor(m => cities, new SelectList(cities, "Id", "Name"), "", new { @class = "form-control" })
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Ár:</label>
+                <table class="col-sm-6">
+                    <tr>
+                        <td>  @Html.TextBoxFor(model => Model.Search.MinPrice, new { placeholder = "Min", @class = "form-control" })
+                        <td>  -
+                        <td>  @Html.TextBoxFor(model => Model.Search.MaxPrice, new { placeholder = "Max", @class = "form-control" })
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Alapterület: </label>
+                <table class="col-sm-6">
+                    <tr>
+                        <td class="">  @Html.TextBoxFor(Model => Model.Search.MinArea, new { placeholder = "Min", @class = "form-control" })
+                        <td>  -
+                        <td class="">  @Html.TextBoxFor(Model => Model.Search.MaxArea, new { placeholder = "Max", @class = "form-control" })
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Szobaszám: </label>
+                <table class="col-sm-6">
+                    <tr>
+                        <td>  @Html.TextBoxFor(Model => Model.Search.RoomNumber, new { placeholder = "Szobák", @class = "form-control" })
+                        <td>  +
+                        <td>  @Html.TextBoxFor(Model => Model.Search.PartyRoomNumber, new { placeholder = "Fél szobák", @class = "form-control" })
+                    </tr>
+                </table>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Fűtés:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.Search.HeatingType" asp-items="Html.GetEnumSelectList(typeof (HeatingType))"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Belmagasság:</label>
+                <div class="col-sm-5">
+                    <select class="form-control" asp-for="@Model.Search.InnerHeightType" asp-items="Html.GetEnumSelectList(typeof (InnerHeightType))"></select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Bútorozott:</label>
+                @Html.CheckBoxFor(Model => Model.Search.Furnished)
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Kisállat:</label>
+                @Html.CheckBoxFor(Model => Model.Search.Animal)
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Erkély:</label>
+                @Html.CheckBoxFor(Model => Model.Search.Balcony)
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Lift:</label>
+                @Html.CheckBoxFor(Model => Model.Search.Elevator)
+            </div>
+            <div class="form-group">
+                <label class="col-sm-5 control-label" for="">Dohányzás: </label>
+                @Html.CheckBoxFor(Model => Model.Search.Smoking)
+            </div>
+            <button type="submit" class="btn bg-primary col-sm-offset-4">
+                Keresés
+            </button>
+        </form>
+    </div>
+
+
+
+
+
+    <div class="col-sm-4">
+        <nav aria-label="Products navigation example">
+            <vc:pager paging-list="@Model.Houses"></vc:pager>
+        </nav>
+    </div>
+
+    @foreach (var House in Model.Houses)
+    {
+        <div class="col-sm-4"></div>
+
+        <div class="col-sm-8">
+
+            <div class="content">
+                <div class="col-sm-11">
+                    <div style="cursor: pointer;" onclick="window.location='https://localhost:44303/Search/Result/@House.Id';">
+                        <img src="~/HouseUploads/@House.Id/@House.Image" class=" img-thumbnail" width=200 />
+                        @if (House.ForSaleType.Value == ForSaleType.Elado)
+                        {
+                            <p>@House.Price MFt </p>
+                        }
+                        else
+                        {
+                            <p>@House.Price Ft/hó </p>
+                        }
+                        <p>@cities.ElementAt(House.CityId.Value - 1).Name, @House.Street , @House.HouseNumber.   </p>
+                        <p>@House.Area m² </p>
+                        @if (House.RoomNumber != 0 && House.PartyRoomNumber != 0)
+                        {
+                            <p>@House.RoomNumber + @House.PartyRoomNumber félszoba </p>
+                        }
+                        else if (House.RoomNumber != 0 && House.PartyRoomNumber == 0)
+                        {
+                            <p>@House.RoomNumber szoba </p>
+                        }
+                        else if (House.RoomNumber == 0 && House.PartyRoomNumber != 0)
+                        {
+                            <p>@House.PartyRoomNumber félszoba </p>
+                        }
+                        else if (House.RoomNumber == 0 && House.PartyRoomNumber == 0)
+                        {
+                            <p> Nincs megadva</p>
+                        }
+                    </div>
+                </div>
+                @if (SignInManager.IsSignedIn(User))
+                {
+                    <a asp-action="AddToFavourites" asp-route-Id="@House.Id">
+                        <span class="glyphicon glyphicon-star-empty"></span>
+                    </a>
+                }
+            </div>
+            <p></p>
+
+        </div>
+
+    }
+
+    <div class="col-sm-4">
+        <nav aria-label="Products navigation example">
+            <vc:pager paging-list="@Model.Houses"></vc:pager>
+        </nav>
+    </div>
+</div>
+
+
+
+
+
+

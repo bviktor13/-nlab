@@ -1,4 +1,4 @@
-﻿using MyWebAppDal.Model;
+﻿using MyWebAppDal.Models;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -7,6 +7,7 @@ namespace MyWebAppDal.DTO
 {
     public class HouseDto
     {
+        public string ApplicationUserId { get; set; }
         public int Id { get; set; }
         public int? Price { get; set; }
         public int? CityId { get; set; }
@@ -16,5 +17,6 @@ namespace MyWebAppDal.DTO
         public int? RoomNumber { get; set; }
         public int? PartyRoomNumber { get; set; }
         public string Image { get; set; }
+        public ForSaleType? ForSaleType { get; set; }
     }
 }

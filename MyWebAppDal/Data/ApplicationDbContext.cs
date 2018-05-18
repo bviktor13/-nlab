@@ -4,8 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-using MyWebAppDal.Model;
 using MyWebAppDal.Models;
+
 
 namespace MyWebApp.Data
 {
@@ -20,7 +20,7 @@ namespace MyWebApp.Data
             _options = options;
         }
 
-        public ApplicationDbContext() : base(_options)
+        public ApplicationDbContext() :base(_options)
         {
         }
 
@@ -40,5 +40,6 @@ namespace MyWebApp.Data
         public DbSet<House> Houses { get; set; }
         public DbSet<City> Cities { get; set; }
         public DbSet<HouseSearch> HouseSearches { get; set; }
+        public DbSet<Favourite> Favourites { get; set; }
     }
 }

@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Text;
 
 
-namespace MyWebAppDal.Model
+namespace MyWebAppDal.Models
 {
     public enum ForSaleType
     {

@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -14,6 +17,7 @@ using MyWebApp.Models;
 using MyWebApp.Models.ManageViewModels;
 using MyWebApp.Services;
 using MyWebAppDal.Models;
+using MyWebAppDal.Repository;
 
 namespace MyWebApp.Controllers
 {
@@ -26,6 +30,8 @@ namespace MyWebApp.Controllers
         private readonly IEmailSender _emailSender;
         private readonly ILogger _logger;
         private readonly UrlEncoder _urlEncoder;
+        private readonly IHostingEnvironment _environment;
+        private IRepository _repo;
 
         private const string AuthenticatorUriFormat = "otpauth://totp/{0}:{1}?secret={2}&issuer={0}&digits=6";
         private const string RecoveryCodesKey = nameof(RecoveryCodesKey);
@@ -35,13 +41,17 @@ namespace MyWebApp.Controllers
           SignInManager<ApplicationUser> signInManager,
           IEmailSender emailSender,
           ILogger<ManageController> logger,
-          UrlEncoder urlEncoder)
+          UrlEncoder urlEncoder,
+          IHostingEnvironment environment,
+          IRepository repo)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _emailSender = emailSender;
             _logger = logger;
             _urlEncoder = urlEncoder;
+            _environment = environment;
+            _repo = repo;
         }
 
         [TempData]
@@ -63,15 +73,18 @@ namespace MyWebApp.Controllers
                 PhoneNumber = user.PhoneNumber,
                 IsEmailConfirmed = user.EmailConfirmed,
                 StatusMessage = StatusMessage,
-                BirthDate = user.BirthDate
+                BirthDate = user.BirthDate,
+                ProfilePicture = user.Image
             };
+
+            ViewData["UserId"] = user.Id;
 
             return View(model);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(IndexViewModel model)
+        public async Task<IActionResult> Index(IndexViewModel model, IFormFile ProfilePictureFile )
         {
             if (!ModelState.IsValid)
             {
@@ -103,6 +116,23 @@ namespace MyWebApp.Controllers
                     throw new ApplicationException($"Unexpected error occurred setting phone number for user with ID '{user.Id}'.");
                 }
             }
+
+            if(ProfilePictureFile != null)
+            {
+                string uploadPath = Path.Combine(_environment.WebRootPath, "Uploads");
+                Directory.CreateDirectory(Path.Combine(uploadPath, user.Id));
+                string fileName = Path.GetFileName(ProfilePictureFile.FileName);
+
+                using (FileStream fs = new FileStream(Path.Combine(uploadPath, user.Id, fileName), FileMode.Create))
+                {
+                    await ProfilePictureFile.CopyToAsync(fs);
+
+                }
+                model.ProfilePicture = fileName;
+                _repo.SaveProfilePicture(user.Id, fileName);
+            }
+
+            ViewData["UserId"] = user.Id;
 
             StatusMessage = "Your profile has been updated";
             return RedirectToAction(nameof(Index));
